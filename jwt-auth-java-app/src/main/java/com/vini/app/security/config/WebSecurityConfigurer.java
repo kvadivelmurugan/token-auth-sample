@@ -4,6 +4,7 @@ import com.vini.app.services.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -26,23 +27,23 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure (AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService);
-        ///auth.jdbcAuthentication().
         /*auth.inMemoryAuthentication()
-                .withUser("user1")
-                .password("password")
-                .roles("EVENTS_ROLE")
-                .and()
-                .withUser("user2")
-                .password("password")
-                .roles("CONTACTS_ROLE")
-                .and()
-                .withUser("user3")
-                .password("password")
-                .roles("NOTES_ROLE")
-                .and()
-                .withUser("user4")
-                .password("password")
-                .roles("EXPENSES_ROLE");*/
+            .withUser("user1")
+            .password("password")
+            .roles("EVENTS_ROLE")
+            .and()
+            .withUser("user2")
+            .password("password")
+            .roles("CONTACTS_ROLE")
+            .and()
+            .withUser("user3")
+            .password("password")
+            .roles("NOTES_ROLE")
+            .and()
+            .withUser("user4")
+            .password("password")
+            .roles("EXPENSES_ROLE");*/
+
     }
 
     protected void configure (HttpSecurity http) throws Exception {
@@ -55,12 +56,18 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated()
                 //.antMatchers("/").permitAll()
-                .and().formLogin().disable().
+                .and().formLogin().disable();
     }
 
     @Bean
     protected PasswordEncoder getPasswordEncoder() {
         return NoOpPasswordEncoder.getInstance();
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
     @Bean

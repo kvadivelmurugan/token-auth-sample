@@ -4,20 +4,15 @@ import api from "./_api.js"
 import RoleModel from './../models/RoleModel'
 class AuthService {
 
-    doBasicAuth (userName, password) {
-        console.log (userName + " " + password)
+    doAuth (username, password) {
+        console.log (username + " " + password)
 
-        let authHeader = this.getAuthHeader (userName, password)
+        let authHeader = this.getAuthHeader (username, password)
 
-        return api.post ('auth/basic?userName='+userName, 
-            { }, 
-            {
-                headers: {
-                    authorization: authHeader
-                    //'Access-Control-Allow-Origin': 'http://localhost:3000',
-                    //'Access-Control-Allow-Methods' : 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
-                }
-            })
+        return api.post ('auth/token', 
+            {username : username,
+            password : password }
+        )
     }
 
     getRoles (userName) {

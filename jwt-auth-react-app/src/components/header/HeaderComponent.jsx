@@ -85,29 +85,16 @@ class HeaderComponent extends Component {
         this.props.history.push ('/login')
     }
 
-    hasRole = (roleName) => {
-        let roles = this.context.roles
-        console.log (roles)
-        console.log ('roleName : ' + roleName)
-        let isValid = false
-        roles.map (
-            (role) => {
-                console.log (role.roleName)
-                if (role.roleName === roleName) {
-                    console.log ('present')
-                    isValid = true
-                }
-            }
-        )
-        return isValid
+    hasRole = (roleName) => {        
+        return true
     }
 
     initialize = () => {
         this.setState ({
-            isUserAuthenticated: this.context.isAuthenticated,
-            loggedInUserId: this.context.loggedInUserId,
-            loggedInUserName: this.context.loggedInUserName,
-            roles: this.context.roles
+            isUserAuthenticated: false,
+            loggedInUserId: '',
+            loggedInUserName: '',
+            roles: []
         })
         console.log ('...initialized...')
     }

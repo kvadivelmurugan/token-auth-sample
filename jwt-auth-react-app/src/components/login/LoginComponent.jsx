@@ -75,11 +75,9 @@ class LoginComponent extends Component {
         event.preventDefault()
         
         if (this.isValidForm()) {
-            AuthService.doBasicAuth (this.state.email, this.state.password)
-                .then((response) => {
-                    console.log ('auth success' + response.data.userId)
-                    console.log ('ROLE ' + response.data.roleList[0].roleName)
-                    //AuthService.registerLogin (this.state.email, this.state.password, response.data.userId, response.data.roleList[0].roleName)
+            AuthService.doAuth (this.state.email, this.state.password)
+                .then((response) => {  
+                    console.log (response)                
                     AuthService.registerLogin (true, response.data)
                     this.context.registerLogin (true, response.data)
                     this.props.history.push ("/home")

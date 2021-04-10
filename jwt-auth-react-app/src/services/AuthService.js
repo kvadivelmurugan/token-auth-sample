@@ -5,9 +5,7 @@ import RoleModel from './../models/RoleModel'
 class AuthService {
 
     doAuth (username, password) {
-        console.log (username + " " + password)
-
-        let authHeader = this.getAuthHeader (username, password)
+        console.log (username + " " + password)        
 
         return api.post ('auth/token', 
             {username : username,
@@ -19,45 +17,21 @@ class AuthService {
         return api.get (`roles/${userName}`)
     }
 
-    registerLogin (userName, password, userId, roleName) {
-        console.log ('registerLogin called...')
-        sessionStorage.setItem('userName', userName)
-        sessionStorage.setItem('userId', userId)
-
-        let authHeader = this.getAuthHeader(userName, password)
-        sessionStorage.setItem('authHeader', authHeader)
-        //this.setupAxiosInterceptorForRequest (authHeader)
-    }
-
     registerLogin (flag, user) {
         console.log ('registerLogin called...')
-        sessionStorage.setItem('userName', user.userName)
-        sessionStorage.setItem('userId', user.userId)
-
-        let authHeader = this.getAuthHeader(user.userName, user.password)
-        sessionStorage.setItem('authHeader', authHeader)
-        //this.setupAxiosInterceptorForRequest (authHeader)
-        sessionStorage.setItem ('isAuthenticated', flag)
-        sessionStorage.setItem ('user', JSON.stringify(user))
-    }
-
-    setupAxiosInterceptorForRequest (authHeader) {
-        console.log ('interceptors called') 
-        axios.interceptors.request.use (
-            (config) => {
-                if (this.isUserAuthenticated ()) {                                       
-                    config.headers['authorization'] = authHeader                  
-                }
-                return config
-            }
-        )
+        sessionStorage.setItem('userId', user.userId)        
+        sessionStorage.setItem('userName', user.userName)        
+        sessionStorage.setItem('jwtToken', user.jwtToken)
+        sessionStorage.setItem('roles', JSON.stringify(user.authorities))
+        console.log ('Roles :: ' + JSON.stringify(user.authorities))
+        sessionStorage.setItem ('isAuthenticated', flag)       
     }
 
     UnregisterLogin (userName) {
         sessionStorage.removeItem('userName')
+        sessionStorage.removeItem('jwtToken')
         sessionStorage.removeItem('userId')
-        sessionStorage.removeItem('authHeader')
-        sessionStorage.removeItem('user')
+        sessionStorage.removeItem('roles')
         sessionStorage.removeItem ('isAuthenticated')
     } 
 
@@ -65,22 +39,14 @@ class AuthService {
         return sessionStorage.getItem ('userName');
     }
 
-    getLoggedInUserRoleName() {
-        return sessionStorage.getItem ('roleName');
-    }
-
     getLoggedInUserId() {
         return sessionStorage.getItem ('userId');
     }
 
-    getAuthHeader (userName, password) {
-        return 'Basic ' + window.btoa(userName + ":" + password)
-    }
-
     isUserAuthenticated () {
-        let userName = sessionStorage.getItem ('authHeader')
-        console.log (userName)
-        if (userName) {
+        let jwtToken = sessionStorage.getItem ('jwtToken')
+        console.log (jwtToken)
+        if (jwtToken) {
             return true
         }
         return false

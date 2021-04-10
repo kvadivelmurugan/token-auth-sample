@@ -86,13 +86,25 @@ class HeaderComponent extends Component {
     }
 
     hasRole = (roleName) => {        
-        return true
+        let roles = JSON.parse(this.context.roles)         
+        console.log (roles)
+        console.log ('roleName : ' + roleName)
+        let isValid = false
+        roles.map (
+            (role) => {
+                console.log (role.authority)
+                if (role.authority === roleName) {
+                    console.log ('present')
+                    isValid = true
+                }
+            }
+        )
+        return isValid
     }
 
     initialize = () => {
         this.setState ({
             isUserAuthenticated: false,
-            loggedInUserId: '',
             loggedInUserName: '',
             roles: []
         })

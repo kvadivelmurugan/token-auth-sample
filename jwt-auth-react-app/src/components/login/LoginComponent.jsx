@@ -77,9 +77,10 @@ class LoginComponent extends Component {
         if (this.isValidForm()) {
             AuthService.doAuth (this.state.email, this.state.password)
                 .then((response) => {  
-                    console.log (response)                
-                    AuthService.registerLogin (true, response.data)
-                    this.context.registerLogin (true, response.data)
+                    console.log (response)            
+                    let user = response.data    
+                    AuthService.registerLogin (true, user)
+                    this.context.registerLogin (true, user.userId, user.userName, user.jwtToken, user.authorities)
                     this.props.history.push ("/home")
                 }).catch(
                 (error) => {

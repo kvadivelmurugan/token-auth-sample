@@ -1,5 +1,7 @@
 package com.vini.app.security.config;
 
+import com.vini.app.config.JwtAuthenticationEntryPoint;
+import com.vini.app.filters.JwtRequestFilter;
 import com.vini.app.services.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,8 +12,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -23,6 +27,12 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Autowired
     UserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtRequestFilter jwtRequestFilter;
+
+    @Autowired
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Override
     protected void configure (AuthenticationManagerBuilder auth) throws Exception {
@@ -56,7 +66,13 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated()
                 //.antMatchers("/").permitAll()
+                .and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().formLogin().disable();
+
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
     }
 
     @Bean

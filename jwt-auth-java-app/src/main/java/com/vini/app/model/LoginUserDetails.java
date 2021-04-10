@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.*;
 
 public class LoginUserDetails implements UserDetails {
+    private long userId;
     private String username;
     private String password;
     private boolean accountNonExpired;
@@ -20,6 +21,7 @@ public class LoginUserDetails implements UserDetails {
     }
 
     public LoginUserDetails(User user) {
+        this.userId = user.getUserId();
         this.username = user.getUserName();
         this.password = user.getPassword();
         this.accountNonExpired = true;
@@ -32,6 +34,10 @@ public class LoginUserDetails implements UserDetails {
             this.authorities.add(grantedAuthority);
         }
         System.out.println("this.authorities ::: " + this.authorities);
+    }
+
+    public long getUserId() {
+        return userId;
     }
 
     @Override

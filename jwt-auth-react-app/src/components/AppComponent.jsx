@@ -23,15 +23,14 @@ import NoteForm from './notes/NoteForm.jsx'
 import NoteList from './notes/NoteList.jsx'
 import AuthenticatedRoute from './AuthenticatedRoute.jsx'
 
-
 class AppComponent extends Component {
     constructor (props) {
         console.log ('constructor...')
         super (props)
 
         this.state = {
-            isAuthenticated : this.isUserAuthenticated(),
-            loggedInUserId: this.getLoggedInUserId(),
+            isAuthenticated : this.isUserAuthenticated(),            
+            loggedInUserId: this.getLoggedInUserId(), 
             loggedInUserName: this.getLoggedInUserName(), 
             roles: this.getLoggedInUserRoles()
         }
@@ -46,7 +45,7 @@ class AppComponent extends Component {
     render () {
         console.log ('render...')
         return (
-            <UserContext.Provider value= {{isAuthenticated: this.state.isAuthenticated, loggedInUserId: this.state.loggedInUserId, loggedInUserName: this.state.loggedInUserName, roles: this.state.roles, registerLogin : this.registerLogin}}>
+            <UserContext.Provider value= {{isAuthenticated: this.state.isAuthenticated, loggedInUserName: this.state.loggedInUserName, roles: this.state.roles, registerLogin : this.registerLogin}}>
                 <div className="container-fluid">
                     
                     <Router>
@@ -76,35 +75,39 @@ class AppComponent extends Component {
 
     initialize = () => {
         let isAuthenticated = sessionStorage.getItem ('isAuthenticated') 
-        if (isAuthenticated) {
-            let user = JSON.parse (sessionStorage.getItem ('user'))
-            this.init (isAuthenticated, user)
+        if (isAuthenticated) {  
+            let userId  = sessionStorage.getItem ('userId')        
+            let userName  = sessionStorage.getItem ('userName') 
+            let jwtToken = sessionStorage.getItem ('jwtToken')        
+            let roles = sessionStorage.getItem ("roles")
+            console.log ('Roles :: ' + roles[0].authority)
+            this.init (isAuthenticated, userId, userName, jwtToken, roles)
         } else {
             this.initWithDefaultValue ()
         }
     }
 
     isUserAuthenticated = () => {
-        let authHeader = sessionStorage.getItem ('authHeader')
-        console.log (authHeader)
-        if (authHeader) {
+        let jwtToken = sessionStorage.getItem ('jwtToken')
+        console.log (jwtToken)
+        if (jwtToken) {
             return true
         }
         return false
     }
     
-    registerLogin = (isAuthenticated, user) => {
-        console.log (' App registerLogin ' + isAuthenticated + ' : ' + user.userId)
-        this.init (isAuthenticated, user)
+    registerLogin = (isAuthenticated, userId, userName, jwtToken, roles) => {
+        console.log (' App registerLogin ' + isAuthenticated + ' : ' + userName)
+        this.init (isAuthenticated, userId, userName, jwtToken, JSON.stringify(roles))
     }
 
-    init = (isAuthenticated, user) => {
-        console.log (' init called....' + isAuthenticated + ':' + user)
+    init = (isAuthenticated, userId, userName, jwtToken, roles) => {
+        console.log (' init called....' + isAuthenticated + ':' + userName + ':' + jwtToken + ':' + roles)
         this.setState ({
             isAuthenticated : isAuthenticated,
-            loggedInUserId: user.userId,
-            loggedInUserName: user.userName, 
-            roles: user.roleList
+            loggedInUserName: userName, 
+            loggerInUserId: userId,
+            roles: roles
         })
     }
 
@@ -112,25 +115,25 @@ class AppComponent extends Component {
         console.log (' initWithDefaultValuet called....')
         this.setState ({
             isAuthenticated : false,
-            loggedInUserId: '',
             loggedInUserName: '', 
+            loggedInUserId: '', 
             roles: []
         })
     }
 
-    getLoggedInUserId = () => {
+    getLoggedInUserName = () => {
         if (this.isUserAuthenticated()) {
-            let user = JSON.parse (sessionStorage.getItem ('user'))
-            return user.userId
+            let userName  = sessionStorage.getItem ('userName')  
+            return userName;
         } else {
             return ''
         }
     }
 
-    getLoggedInUserName = () => {
+    getLoggedInUserId = () => {
         if (this.isUserAuthenticated()) {
-            let user = JSON.parse (sessionStorage.getItem ('user'))
-            return user.userName;
+            let userId  = sessionStorage.getItem ('userId')  
+            return userId;
         } else {
             return ''
         }
@@ -138,8 +141,8 @@ class AppComponent extends Component {
 
     getLoggedInUserRoles = () => {
         if (this.isUserAuthenticated()) {
-            let user = JSON.parse (sessionStorage.getItem ('user'))
-            return user.roleList;
+            let roles = sessionStorage.getItem ("roles")
+            return roles;
         } else {
             return []
         }

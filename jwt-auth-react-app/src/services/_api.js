@@ -8,8 +8,8 @@ const instance = axios.create({
 
 instance.interceptors.request.use (
     (config) => {
-        if (sessionStorage.getItem ('authHeader')) {                                       
-            config.headers['authorization'] = sessionStorage.getItem ('authHeader')                 
+        if (sessionStorage.getItem ('jwtToken')) {                                       
+            config.headers['authorization'] = "Bearer " + sessionStorage.getItem ('jwtToken')                 
         }
         return config
     }

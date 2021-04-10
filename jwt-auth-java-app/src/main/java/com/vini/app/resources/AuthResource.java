@@ -2,6 +2,7 @@ package com.vini.app.resources;
 
 import com.vini.app.model.JwtRequest;
 import com.vini.app.model.JwtResponse;
+import com.vini.app.model.LoginUserDetails;
 import com.vini.app.model.User;
 import com.vini.app.services.AuthService;
 import com.vini.app.services.UserDetailsService;
@@ -26,7 +27,9 @@ public class AuthResource {
 
 		UserDetails userDetails = authService.findUserDetails(jwtRequest.getUsername());
 		String jwtToken = authService.generateToken (userDetails);
-		JwtResponse jwtResponse =  new JwtResponse(jwtToken, userDetails.getUsername(), userDetails.getAuthorities());
+		long userId = ((LoginUserDetails)userDetails).getUserId();
+
+		JwtResponse jwtResponse =  new JwtResponse(userId, jwtToken, userDetails.getUsername(), userDetails.getAuthorities());
 		System.out.println( "JWT Response :: " + jwtResponse);
 		return ResponseEntity.ok(jwtResponse);
 	}

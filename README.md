@@ -6,3 +6,8 @@ jwt-auth-java-app - Java application built on Spring & Spring Security.
 jwt-auth-react-app - eDiary App (Sample) built on React. Used Context as Store.
 
 jwt-auth-react-redux-app - eDiary App (Sample) built on React. Used REDUX as Store.
+
+
+**Pre-requisites**
+
+From MYSQL Command Line or Workbench, run eDiary.sql to create Database and objects required to run this application.

@@ -1,0 +1,4 @@
+const RoleModel = {
+    roleId:'',
+    roleName:''
+}
